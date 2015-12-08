@@ -8,10 +8,16 @@
  	height: 100%; 
  }
 
+ #searchDiv {
+ 	width:100%;
+ 	height:10%;
+ 	background-color: black;
+ 	vertical-align: middle;
+
+ }
+
  #searchBar {
- 	width:20%;
- 	background-color: blue;
- 	
+ 	vertical-align: center;
  }
 
  #bigBox {
