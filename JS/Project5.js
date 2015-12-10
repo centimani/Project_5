@@ -3,16 +3,13 @@ var Bigmap= undefined;
 var startLat = 38.883845;
 var startLng = -94.667995;
 
-
-function AppViewModel(){
-	this.firstName= "Bert";
-	this.lastName = "Bertington";
+var Model = {
+	//this is where we'll declare our variables and arrays
+	//we need an Array to hold our markers start markers
+	// use varname : ko.observable('value')		 
 }
 
-ko.applyBindings( new AppViewModel());
-
-console.log(ko.firstName);
-
+ko.applyBindings(Model); //applies the databind
 
 //locations View
 //Search and Filter Locations here
@@ -91,3 +88,11 @@ mapView = {
 }
 
 	//My Google Maps API Key:  AIzaSyACeu3Nlk0hCOlOHFX0bKVc5m2gFrcNTiQ
+
+
+//ViewModel
+ 
+ ViewModel= {
+ 	// here we'll pass ifnormation between each other
+
+ }
