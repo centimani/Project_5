@@ -2,6 +2,18 @@
 var Bigmap= undefined;
 var startLat = 38.883845;
 var startLng = -94.667995;
+
+
+function AppViewModel(){
+	this.firstName= "Bert";
+	this.lastName = "Bertington";
+}
+
+ko.applyBindings( new AppViewModel());
+
+console.log(ko.firstName);
+
+
 //locations View
 //Search and Filter Locations here
 //At least 5 locations
