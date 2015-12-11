@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="initial-scale=1.0">
-    <link href="css/Project5.css" rel="stylesheet">
+    <link href="CSS/Project5.css" rel="stylesheet">
     <title>Neighborhood Project</title>
   </head>
   <body>
@@ -13,13 +13,17 @@
         <form>
           <input type="text" name="search">
           <input type="submit" value="Submit">
+          <input list="browsers" name='browser'>
+            <datalist id="mapLoc">
+              <!--This is where we will add our list options...-->
+            </datalist>
         </form>
       </div>
       <div id="domMap"></div> <!--This guy can't be put inside a div-->
 
 
     <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyACeu3Nlk0hCOlOHFX0bKVc5m2gFrcNTiQ&callback=mapView.init"></script>
-    <script async src="js/Project5.js"></script>
-    <script src="js/knockout.js"></script>
+    <script async src="JS/Project5.js"></script>
+    <script src="JS/knockout.js"></script>
   </body>
 </html>
