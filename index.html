@@ -6,18 +6,14 @@
     <link href="CSS/Project5.css" rel="stylesheet">
     <title>Neighborhood Project</title>
   </head>
-  <body>
+  <body onload=ViewModel.init()>
 
       <div id="searchDiv">
         <br>
         <form>
-          <!--input type="text" name="search" value="CheckNearbyHomes" onclick>
-          <input type="submit" value="Submit"-->
-          <input type="button" name="POI" value="Point of Interest Activate" onclick="ViewModel.init()"> 
-          <input type="button" name="populate dropdown" value="populatedropdown" onclick="locationView.populateDropdown()">
-           <select id="selectBox"></select>
-           <input type="button" name="focus" value="focus on selected" onclick="locationView.focusDropdown()">
-           <input type="button" name "test" value="testsearch" onclick="Model.searchArray()">
+          <input type="text" name="search" value="search_here" onclick>
+          <input type="submit" value="Submit">
+           <select id="selectBox" onchange="ViewModel.DropDownFocus()"></select>
         </form>
       </div>
       <div id="domMap"></div> <!--This guy can't be put inside a div-->
