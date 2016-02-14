@@ -1,26 +1,55 @@
- html, body { 
- 	height: 100%; 
- 	margin: 0; 
- 	padding: 0; 
+ html, body {
+ 	height: 100%;
+ 	width: 100%;
+ 	margin: 0;
+ 	padding: 0;
  }
 
- #domMap { 
- 	height: 100%; 
+ #domMap {
+ 	height: 100%;
+ 	width: 100% ;
  }
 
  #searchDiv {
- 	width:100%;
- 	height:10%;
- 	background-color: black;
+ 	background-color: gray;
  	vertical-align: middle;
-
+ 	min-height:600px;
  }
+
+#listView{
+  min-width:250px;
+  height:100%;
+  min-height:400px;
+  background-color:red;
+  display: inline-block;
+}
 
  #searchBar {
  	vertical-align: center;
  }
 
- #bigBox {
- 	width:100%;
- 	margin: auto;
+#pac-input{
+  min-height:30px;
+  min-width:120px;
+  font-size:30px;
+  text-align:center;
+}
+ 
+ #window {
+  position: relative;
  }
+ 
+ #hoverBox{
+   position:absolute;
+   top: 10px;
+   left: 10px;
+   z-index:99;
+   min-width:300px;
+   height: 100%;
+   text-align:center;
+   
+ }
+ 
+ #list{
+ }
+ 
