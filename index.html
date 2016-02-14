@@ -9,27 +9,27 @@
   </head>
   <body onload=ViewModel.init()>
     
-    <div class="container">
-      <div class="row">
-        <div id="searchDiv" class="col-md-4">
-        <form>
-          <input id="pac-input" class="controls" type="text" placeholder="Search Box">
-        </form>
-        <div id="List" data-bind="foreach: MapMarkerArray">
-          <div><button data-bind="text: title"  ></button><button>X</button></div><!--this button should remove from the list-->
+    <div id="window">
+      <div id="hoverBox">
+        <div id="searchDiv">
           <br>
-        </div>
-        
-      </div>
-        <div class="col-md-8">
-          <div id="domMap" height="400px"></div>
+            <input id="filter" type="text" placeholder="Fitler List" oninput="locationView.activateSearchBox()" onsubmit="">
+            <input id="pac-input" class="controls" type="text" placeholder="Search For New Locations">
+            <br>
+          <div id="List" data-bind="foreach: MapMarkerArray">
+            <div>
+              <button data-bind="text: title, click: ViewModel.Focus.bind($index)">+</button>
+              <button data-bind="click: ViewModel.removeMarker.bind($index)">x</button>
+            </div><!--this button should remove from the list-->
+          </div>
         </div>
       </div>
     </div>
+  <div id="domMap"></div>
     
     <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyACeu3Nlk0hCOlOHFX0bKVc5m2gFrcNTiQ&libraries=places&callback=mapView.init"></script>
-    <script as?I Vync src="JS/Project5.js"></script>
     <script src="JS/knockout.js"></script>
+    <script async src="JS/Project5.js"></script>
     <script src="JS/jquery-1.11.3.min.js"></script>
   </body>
 </html>
