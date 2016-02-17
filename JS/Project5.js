@@ -1,11 +1,14 @@
 //My Google Maps API Key:  AIzaSyACeu3Nlk0hCOlOHFX0bKVc5m2gFrcNTiQ
 
+//make sure the filter is working proper, fix w/ 1 infoWindow
+//remove infoWindow info when a marker is removed
+
 var Bigmap= undefined; //used to save the Map reference
 var startLat = 38.883881; //used for init of Map
 var startLng = -94.667829; //used for init of Map
-var searchBox = document.getElementById("filter"); //searchBox Value
-var infoWindowsMade = 0; //used to make new infowindows pop up
-
+var searchBoxValue =ko.observable('');
+var globalInfoWindow=undefined;
+var infoWindowStr= ""; //this might be a KO binding
 var BarkerArray = ko.observableArray([ //Holds the HardCoded Data I picked
 	   		{lat: "38.895180" , lng:"-94.669989", markerName:"HR HAVEN" },
 	   		{lat: "38.853392" , lng:"-94.682561", markerName:"Target" },
@@ -15,31 +18,29 @@ var BarkerArray = ko.observableArray([ //Holds the HardCoded Data I picked
 	    ]);
 // all the functions are all modified at the same time, these will all share the same index in their respective Arrays, use this for searching
 var MapMarkerArray = ko.observableArray([]); //populated by their creation. This holds Markers
-var infoWindowArray = ko.observableArray([]); //populated by their creation. This holds infoWindows
+var infoWindowSTRArray = ko.observableArray([]);//tesssssst
 
 var Model = { //Model will handle all of the calculations of the data
 };
 
 locationView = {
 
-  activateSearchBox: function(){
-    var SearchValue=searchBox.value; //gets the value of the Search Box
-    
-    if(SearchValue.length !== 0){ //if the search box is empty or full
-      locationView.searchLocations(SearchValue); //search for stuff if the box has a value in it
+  testOnKeyUp: function(){
+    if(searchBoxValue().length > 0 ){
+      locationView.searchLocations(searchBoxValue());
+      //locationView.visibility(); //visibility check
     }
-    else{ //else reset all markers
-     ViewModel.showAllMarkers(); //shows all Markers
-     mapView.closeAllInfoWindows();// closes all InfoWindows
-     ViewModel.markerUnBounceAll(); //unbounces all Markers
+    else{
+      ViewModel.showAllMarkers(); //shows all Markers
+      mapView.closeAllInfoWindows();// closes all InfoWindows
+      ViewModel.markerUnBounceAll(); //unbounces all Markers
     }
   },
-  
+
   searchLocations: function(searchValue){
     for (var i = 0; i < MapMarkerArray().length; i++){ //for every marker in the marker array
       var markerTitle = MapMarkerArray()[i].title; //this is the value we're searching against
-      var searchValueLength = searchValue.length;
-    //we're going to slice the title based on the length of the searchValue
+      var searchValueLength = searchValue.length; //we're going to slice the title based on the length of the searchValue
       locationView.wordSearch(markerTitle,searchValue,searchValueLength, MapMarkerArray()[i]); //this does a comparison between two values@index and inclues marker.
     }
   },
@@ -53,11 +54,40 @@ locationView = {
     if(slicedTitle == slicedSearch){
       ViewModel.markerBounce(marker); //make this marker bounce
       var markerIndex = MapMarkerArray().indexOf(marker); //get the index value of our marker
-      mapView.openOneMarkerInfoWindow(markerIndex); //open that InfoWindow
+      if( slicedSearch.length >2){
+        globalInfoWindow.open(); //this isn't working
+      }
+      return true;
     }
     else if(slicedTitle != slicedSearch){
       ViewModel.unBounce(marker); //Unbounce marker
       ViewModel.hideMarker(marker); //hide marker
+      return false;
+    }
+  },
+  
+  visibility: function(contextItem){ //what is the context object
+    
+    if(searchBoxValue().length === 0 ){
+      return true; //defaults to true
+    }
+    else{
+        if(searchBoxValue().length >0){
+      var myMarkerTitle = contextItem.$data.title;
+      var mySearchTerm = searchBoxValue();
+      var mySearchLength =searchBoxValue().length;
+      var myMarker = contextItem.$data;
+      
+      var result = locationView.wordSearch(myMarkerTitle,mySearchTerm,mySearchLength,myMarker);
+      
+      if(result === true){
+        return true;
+      }
+      else if( result ===false){
+        return false;
+      }
+      
+      }
     }
   },
 };
@@ -67,11 +97,14 @@ mapView = {
 	init: function (){ //initializes the map
 		 var map = new google.maps.Map(document.getElementById('domMap'),{
 			center: {lat: startLat, lng: startLng},
-			scrollwheel: true,
+			scrollwheel: false, //maybe change this for depending on screen width? not super important
+			disableDefaultUI: true, //cleans up the map UI on mobile
 			zoom: 13
 		});
 		Bigmap=map; //set this new map we made to be used as a global variable
 	  mapView.initSearchBox();//inits the search box
+	  ViewModel.init();
+	  mapView.initInfoWindow();
 	},
 	
 	initSearchBox: function(){
@@ -100,16 +133,122 @@ mapView = {
     ViewModel.markerBounceAll(newMarker); //make it bouuunce
     });
 	},
-
-  resizeMap: function(){
-    var bounds = new google.maps.LatLngBounds();
-    for(var i=0; i < MapMarkerArray().length; i++) { //adds each marker to a greater bounding function
-      bounds.extend(MapMarkerArray()[i].getPosition());
-    }
-  Bigmap.fitBounds(bounds); //resizes map
+	
+	sort: function(){ //I was correct, when it does occur, the mismatch is based on how fast they finish and are added into the array.
+	  var infoWindow = infoWindowSTRArray()[0]; //fifth character in is our should be index
+	  var mapMarker = MapMarkerArray()[0];
+	  var tempArray = ["","","","",""]; //make more empties based on the length of the map marker array
+	  
+	  for (i = 0; i < MapMarkerArray().length; i++){
+	    var correctIndex =infoWindowSTRArray()[i].slice(4,5); //this will need to be expanded in the future for multiple digits
+	    console.log("correct index = " + correctIndex +" : " + "currentIndex= "+ i);
+	    if( correctIndex != i){
+	     var strToMove = infoWindowSTRArray()[i];
+	     tempArray.splice(correctIndex,1, strToMove);
+	   }
+	   else{
+	    tempArray.splice(i,1,infoWindowSTRArray()[i]);
+	   }
+	  }
+	  console.log(tempArray);
+	  infoWindowSTRArray= ko.observableArray(tempArray);
+	  console.log(infoWindowSTRArray);
+	},
+	
+	initInfoWindow: function(){
+	  globalInfoWindow = new google.maps.InfoWindow({content: infoWindowStr,});
+    //google.maps.event.addListener(globalInfoWindow,'closeclick', mapView.getMarker());
+		  //console.log("init'd InfoWindow");
+	},
+	
+	buildInfoWindow: function(passedMarker){
+      var myLat = passedMarker.position.lat(); //set lat
+      var myLng = passedMarker.position.lng(); //set lng
+      var myName = passedMarker.title; //set title
+      var markerIndex = MapMarkerArray().indexOf(passedMarker); //get index of passed marker
+      
+        mapView.retrieveData(myLat,myLng,myName, markerIndex); //use all this to to make the AJAX call
   },
 	
-	placeMapMarkers: function(lat, lng, mName){
+	closeAllInfoWindows: function(infoWindow){
+	  if(globalInfoWindow === undefined){
+        //console.log("we're not init'd");
+	  }
+	  else{
+      globalInfoWindow.close();
+	  }
+	},
+
+  retrieveData: function(lat,lng, name, index){
+  var myClientID = "3MCVEAWYXO4UL1RPEYO1XBIXQPNGEYXITVOD2X3EF5E0LT3W";
+  var mySecretID = "FZFTDA0MHSVNUCDYYZXUCELLQNKLO2NIDGIXIZPNASPRNU0M";
+  var ajaxURL = "https://api.foursquare.com/v2/venues/search?client_id="+myClientID+"&client_secret="+mySecretID+"&v=20130815&ll="+lat+","+lng+"&query="+name;
+   
+  $.get(ajaxURL ,function(data,status){
+      //might do a confirmation that verified==true;
+      var infoName = data.response.venues[0].name; //returns company name
+      if( infoName === undefined){
+        infoName = "Name unavailable";
+      }
+      var infoPhone = data.response.venues[0].contact.formattedPhone; //returns a phone number
+      if( infoPhone === undefined){
+        infoPhone = "Phone Number unavailable";
+      }
+      var infoURL = data.response.venues[0].url; //returns the URL
+      if( infoURL === undefined){
+        infoURL = "URL unavailable"; //also try to break the URL Link
+      }
+      var infoBuilding = data.response.venues[0].categories[0].name; //returns the type of building
+      if( infoBuilding === undefined){
+        infoBuilding = "Building Type unavailable";
+      }
+      var infoHereNow = data.response.venues[0].hereNow.summary; //returns if they're open
+       if( infoHereNow === undefined){
+        infoHereNow = "People Here Now is unavailable";
+      }
+      var infoAddress = data.response.venues[0].location.address; //returns physical address
+       if( infoAddress === undefined){
+        infoAddress = "Address unavailable";
+      }
+      var infoTwitter = data.response.venues[0].contact.twitter; //returns twitter acct name
+      if( infoTwitter === undefined){
+        infoTwitter="Twitter Unavailable";//try to break the link later
+      }
+      var infoCheckin = data.response.venues[0].stats.checkinsCount;//returns the checkins count
+      if(infoCheckin === undefined){
+        infoCheckin ="Check In Unavailable";
+      }
+      
+      mapView.makeInfoWindow(infoName,infoPhone,infoURL,infoBuilding,infoHereNow,infoAddress,infoTwitter,infoCheckin,index);
+    })
+      .fail(function() {
+        alert("Couldn't retrieve data."); //lolfail
+      });
+  },
+  
+  makeInfoWindow: function(name,phone,url,buildingtype,herenow,address,twitter,checkin,insertIndex){
+    var infoWindowBase ="<!--"+insertIndex+"--><span class='bTitle'>"+name+"</span><br><span>"+buildingtype+"</span>"+" - "+"<span>"+herenow+"</span><br><span>"+address+"</span><br><span>"+phone+"</span><br><span>Website: </span>";
+    
+    //breaks website link
+    if (url === "URL unavailable"){
+      infoWindowBase = infoWindowBase.concat("<span>"+name+"</span>"); //if not available, a becomes a span
+    }
+    else {
+      infoWindowBase = infoWindowBase.concat("<a href='" +url+"'>"+name+"</a>"); //its a link now
+    }
+    
+    //breaks twitter link
+    if (twitter === "Twitter Unavailable"){
+      infoWindowBase = infoWindowBase.concat(" "+",  "+"<span>Twitter: </span><span>"+twitter+"</span><br>");
+    }
+    else {
+      infoWindowBase = infoWindowBase.concat(" "+",  "+"<span>Twitter: </span><a href='http://twitter.com/"+twitter+"'>"+twitter+"</a><br>");
+    }
+    
+    infoWindowSTRArray.splice(insertIndex, 0, infoWindowBase); //add it to the array
+  },
+  
+  placeMapMarkers: function(lat, lng, mName){
 		var myLatlng = new google.maps.LatLng(lat, lng); //way to save in LatLng values so google likes it
     var newMarker = new google.maps.Marker({
 			position: myLatlng, //use our newly created latlng
@@ -120,82 +259,37 @@ mapView = {
 		  
 		  MapMarkerArray.push(newMarker);//passes this data into the MarkerArray
 		  var newIndex = MapMarkerArray().indexOf(newMarker);
-
+		
       newMarker.addListener('click', function(){ //Adds ClickEvent to Button
-        var myInfoWindow= infoWindowArray()[newIndex];
-	      myInfoWindow.open(Bigmap, newMarker);
+        infoWindowStr = infoWindowSTRArray()[newIndex]; //sets the value
+        globalInfoWindow.setContent(infoWindowStr);//should fucking change the content of the infowindow but fucking doesnt'
+	      globalInfoWindow.open(Bigmap, newMarker); //open the infowindow
 	      ViewModel.markerBounceAll(newMarker); //should bounce when its clicked too
 	      var newMarkerIndex = MapMarkerArray().indexOf(newMarker);
 	      mapView.openMarkerInfoWindow(newMarkerIndex); //Highlights infoWindow. I think this is where we're erring
 	    });
 	    
+	    //if(){
 	    mapView.buildInfoWindow(newMarker); //builds info window using our current marker information
-	    return newMarker; //returns the new marker. dont' remember if I'm still using this
+	    //return newMarker; //returns the new marker. dont' remember if I'm still using this
+	    //}
     },
-  
-  buildInfoWindow: function(passedMarker){
-      var myLat = passedMarker.position.lat(); //set lat
-      var myLng = passedMarker.position.lng(); //set lng
-      var myName = passedMarker.title; //set title
-      var markerIndex = MapMarkerArray().indexOf(passedMarker); //get index of passed marker
-      mapView.retrieveData(myLat,myLng,myName, markerIndex); //use all this to to make the AJAX call
-  },
-
-  retrieveData: function(lat,lng, name, index){
-  var myClientID = "3MCVEAWYXO4UL1RPEYO1XBIXQPNGEYXITVOD2X3EF5E0LT3W";
-  var mySecretID = "FZFTDA0MHSVNUCDYYZXUCELLQNKLO2NIDGIXIZPNASPRNU0M";
-  var ajaxURL = "https://api.foursquare.com/v2/venues/search?client_id="+myClientID+"&client_secret="+mySecretID+"&v=20130815&ll="+lat+","+lng+"&query="+name;
-   
-  $.get(ajaxURL ,function(data,status){
-      //might do a confirmation that verified==true;
-      var infoName = data.response.venues[0].name; //returns company name
-      var infoPhone = data.response.venues[0].contact.formattedPhone; //returns a phone number
-      var infoURL = data.response.venues[0].url; //returns the URL
-      var infoBuilding = data.response.venues[0].categories[0].name; //returns the type of building
-      var infoHereNow = data.response.venues[0].hereNow.summary; //returns if they're open
-      var infoAddress = data.response.venues[0].location.address; //returns physical address
-      var infoTwitter = data.response.venues[0].contact.twitter; //returns twitter acct name
-      var infoCheckin = data.response.venues[0].stats.checkinsCount;//returns the checkins count
-      mapView.makeInfoWindow(infoName,infoPhone,infoURL,infoBuilding,infoHereNow,infoAddress,infoTwitter,infoCheckin,index);
-    })
-      .fail(function() {
-        alert("Couldn't retrieve data."); //lolfail
-      });
-  },
-  
-  makeInfoWindow: function(name,phone,url,buildingtype,herenow,address,twitter,checkin,insertIndex){
-    var infoWindowBase="<span class='bTitle'>"+name+"</span><br><span>"+buildingtype+"</span>"+" - "+"<span>"+herenow+"</span><br><span>"+address+"</span><br><span>"+phone+"</span><br><span>Website: </span><a href='" +url+"'>"+name+"</a>"+",  "+"<span>Twitter: </span><a href='http://twitter.com/"+twitter+"'>"+twitter+"</a><br>"; //base for what the infoWindows will contain
-    var newInfoWin = new google.maps.InfoWindow({
-			content: infoWindowBase, //uses the base to make this new infowindow
-		  });
-    infoWindowArray.splice(insertIndex,0,newInfoWin); //adds the new info window to the array to match it's marker since they don't all process at the same time
-    var newIndex= infoWindowArray().indexOf(newInfoWin);//index of the new info window
-    infoWindowsMade++; //add one to keep the Barker Array markers from opening initially, but each added one would after
-  
-    if(infoWindowsMade > 5){//if this new infoWindow was not made from the barker array
-    mapView.openMarkerInfoWindow(newIndex); //opens the new infoWindow after the initial infoWindows are made
-    }
-  },
   
   openMarkerInfoWindow: function(myIndex){
     var currentMarker = MapMarkerArray()[myIndex]; //gets the Map Marker at the index
-    var myInfoWindow= infoWindowArray()[myIndex]; //gets the Info Window at the index
-    for (i = 0; i < infoWindowArray().length; i++){ //closes ALL the infoWindows
-      infoWindowArray()[i].close();
-    }
-    myInfoWindow.open(Bigmap,currentMarker); //opens the infoWindow
+    globalInfoWindow.open(Bigmap,currentMarker); //opens the infoWindow
   },
   
-  openOneMarkerInfoWindow: function(myIndex){ //this is for multiple infoWindows
-     var currentInfoWindow = infoWindowArray()[myIndex]; //gets the infoWindow at the Index
-     var currentMarker = MapMarkerArray()[myIndex]; //gets the Map Marker at the index
-     currentInfoWindow.open(Bigmap,currentMarker); //opens the infoWindow
+  resizeMap: function(){
+    var bounds = new google.maps.LatLngBounds();
+    for(var i=0; i < MapMarkerArray().length; i++) { //adds each marker to a greater bounding function
+      bounds.extend(MapMarkerArray()[i].getPosition());
+    }
+  Bigmap.fitBounds(bounds); //resizes map
   },
-
-	closeAllInfoWindows: function(){
-	 for (i = 0; i < infoWindowArray().length; i++){ //closes ALL the infoWindows
-      infoWindowArray()[i].close();
-	 }
+  
+	googleMapsAPIError: function(){ //error message
+	  alert("Google Maps could not be loaded");
 	},
 };
 
@@ -210,21 +304,18 @@ mapView = {
     }
   },
   
-  Focus: function(focusedMarker){ //Bounces selected Marker and opens infoWindow focusedMarker
-    var focusedIndex = MapMarkerArray.indexOf(focusedMarker);
-		mapView.openMarkerInfoWindow(focusedIndex); //open map Marker info window
-		var myMarker=MapMarkerArray()[focusedIndex]; //gets the marker at the focused Index
-		ViewModel.markerBounceAll(myMarker); //makes this marker bounce
-		mapView.resizeMap(); //resize map
-  },
+  Focus: function(focusedMarker) {
+    google.maps.event.trigger(focusedMarker, 'click');
+    },
   
   markerBounceAll: function(passMarker){
     for (i = 0; i < MapMarkerArray().length; i++) {
       MapMarkerArray()[i].setAnimation(null); //Turns off the Bounce in the entire Marker Array
     }
-    passMarker.setAnimation(google.maps.Animation.BOUNCE); //Turns Bounce on one we want to bounce.
+    window.setTimeout(ViewModel.markerBounce(passMarker),2100);
+      //passMarker.setAnimation(google.maps.Animation.BOUNCE); //Turns Bounce on one we want to bounce. Put a setTimeout on this bitch
   },
-  
+
   markerUnBounceAll: function(){
     for (i = 0; i < MapMarkerArray().length; i++) {
       MapMarkerArray()[i].setAnimation(null); //Turns off the Bounce in the entire Marker Array
@@ -247,7 +338,7 @@ mapView = {
     var removedIndex = MapMarkerArray.indexOf(markerToRemove); ///get the index of the marker to be removed
     MapMarkerArray.remove(markerToRemove); //removes this marker from the array
     markerToRemove.setMap(null); //removes them from the map
-    infoWindowArray.splice(removedIndex, 1);
+    infoWindowSTRArray.splice(removedIndex, 1, markerToRemove); //removes the infoWindow
     mapView.resizeMap();
   },
   
@@ -266,5 +357,6 @@ mapView = {
   },
  };
 
- ko.applyBindings();
+ ko.applyBindings(ViewModel);
+ 
 
