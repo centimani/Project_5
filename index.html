@@ -4,30 +4,29 @@
     <meta charset="utf-8">
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
     <link href="CSS/Project5.css" rel="stylesheet">
-    <link href="CSS/bootstrap.min.css" rel="stylesheet">
     <title>Neighborhood Project</title>
   </head>
-  <body onload=ViewModel.init()>
+  <body onload="mapView.sort()">
     
     <div id="window">
       <div id="hoverBox">
         <div id="searchDiv">
           <br>
-            <input id="filter" type="text" placeholder="Fitler List" oninput="locationView.activateSearchBox()" onsubmit="">
+            <!--button onClick="mapView.sort()">Sort</button-->
+            <input id="filter" type="text" data-bind="textInput:searchBoxValue, event: {keyup:locationView.testOnKeyUp()}">
             <input id="pac-input" class="controls" type="text" placeholder="Search For New Locations">
             <br>
           <div id="List" data-bind="foreach: MapMarkerArray">
-            <div>
-              <button data-bind="text: title, click: ViewModel.Focus.bind($index)">+</button>
-              <button data-bind="click: ViewModel.removeMarker.bind($index)">x</button>
+            <div class="buttonBox">
+              <button class="listButton" data-bind="text: title, click: ViewModel.Focus.bind($index), visible : locationView.visibility($context)===true">+</button>
+              <button class="cancelButton" data-bind="click: ViewModel.removeMarker.bind($index), visible : locationView.visibility($context)===true">x</button>
             </div><!--this button should remove from the list-->
           </div>
         </div>
       </div>
     </div>
   <div id="domMap"></div>
-    
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyACeu3Nlk0hCOlOHFX0bKVc5m2gFrcNTiQ&libraries=places&callback=mapView.init"></script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyACeu3Nlk0hCOlOHFX0bKVc5m2gFrcNTiQ&libraries=places&callback=mapView.init" onerror="googleMapsAPIError()"></script>
     <script src="JS/knockout.js"></script>
     <script async src="JS/Project5.js"></script>
     <script src="JS/jquery-1.11.3.min.js"></script>
