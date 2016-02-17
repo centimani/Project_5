@@ -43,14 +43,80 @@
    position:absolute;
    top: 10px;
    left: 10px;
-   z-index:99;
+   z-index:98;
    min-width:300px;
    height: 100%;
    text-align:center;
    width:20%;
+   background-color:red;
    
  }
  
- #list{
+ #hidebutton{
+   opacity:0;
  }
  
+ .buttonBox{
+   
+ }
+
+.listButton{
+  display:inline;
+}
+
+@media screen and (max-width: 480px) {
+    #searchDiv {
+      height:20%;
+      min-height:200px;
+    }
+    #hidebutton{
+      opacity:1;
+    }
+    
+    #searchDiv{
+      width:100%;
+      height:100%;
+    }
+    #window{
+      width:100%;
+      height:20%;
+      z-index:0;
+      min-height:200px;
+    }
+    #hoverBox{
+      width:100%;
+      height:20%;
+      top: 0;
+      left:0;
+    }
+    .listButton{
+      float:left;
+      margin: 10px 0 0 0;
+    }
+    .cancelButton{
+      float: left;
+      margin: 10px 20px 0 0px;
+    }
+}
+
+@media screen and (min-width:480px) and (max-width: 720px) {
+  #hoverBox{
+    width:20%;
+    min-width:200px;
+  }
+  #searchDiv{
+    min-width:200px;
+    width:20%;
+  }
+  #pac-input{
+    text-align:center;
+    min-height:25px;
+    min-width:80px;
+    font-size:20px;
+  }
+  #filter{
+    max-width:150px;
+    margin: 0 0 20px 0;
+  }
+  
+}
