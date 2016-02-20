@@ -6,26 +6,40 @@
     <link href="CSS/Project5.css" rel="stylesheet">
     <title>Neighborhood Project</title>
   </head>
-  <body onload="mapView.sort()">
+  <body onload=mapView.sort()>
     
     <div id="window">
       <div id="hoverBox">
         <div id="searchDiv">
           <br>
-            <!--button onClick="mapView.sort()">Sort</button-->
-            <input id="filter" type="text" data-bind="textInput:searchBoxValue, event: {keyup:locationView.testOnKeyUp()}">
-            <input id="pac-input" class="controls" type="text" placeholder="Search For New Locations">
+            <form action="#">
+              <input id="filter" type="search" placeholder="Search Location List" name="q" data-bind="value: query, valueUpdate: 'keyup'," autocomplete="off">
+              <input id="pac-input" class="controls" type="text" placeholder="Search For New Locations">
+            </form>
             <br>
-          <div id="List" data-bind="foreach: MapMarkerArray">
-            <div class="buttonBox">
-              <button class="listButton" data-bind="text: title, click: ViewModel.Focus.bind($index), visible : locationView.visibility($context)===true">+</button>
-              <button class="cancelButton" data-bind="click: ViewModel.removeMarker.bind($index), visible : locationView.visibility($context)===true">x</button>
-            </div><!--this button should remove from the list-->
+            <!--div id="List" data-bind="foreach: fakeMapMarkerArray">
+                <div>
+                  <button class="listButton" data-bind="text: title, click: ViewModel.Focus.bind($index),">+</button>
+                  <button class="cancelButton" data-bind="click: ViewModel.removeMarker.bind($index),">x</button>
+                </div>
+          </div-->
+          <div class="content">
+            <ul data-bind="template: {name:'marker', foreach:locationView.fakeMapMarkerArray}">
+            </ul>
           </div>
+          
         </div>
       </div>
     </div>
   <div id="domMap"></div>
+  
+  <script data-proofer-ignore type="text/html" id="marker">
+    <li>
+      <button data-bind="text: title, click: ViewModel.Focus.bind($index),">+</button>
+      <button data-bind="click: ViewModel.removeMarker.bind($index),">x</button>
+    </li>
+  </script>
+
     <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyACeu3Nlk0hCOlOHFX0bKVc5m2gFrcNTiQ&libraries=places&callback=mapView.init" onerror="googleMapsAPIError()"></script>
     <script src="JS/knockout.js"></script>
     <script async src="JS/Project5.js"></script>
