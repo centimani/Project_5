@@ -7,7 +7,7 @@
     <link href="CSS/bootstrap.min.css" rel="stylesheet">
     <title>Neighborhood Project</title>
   </head>
-  <body onload=ViewModel.init()>
+  <body onload=ViewModel.initBuildMarkers()>
     
     <div class="container">
       <div class="row">
@@ -16,7 +16,7 @@
           <input id="pac-input" class="controls" type="text" placeholder="Search Box">
         </form>
         <div id="List" data-bind="foreach: MapMarkerArray">
-          <div><button data-bind="text: title"  ></button><button>X</button></div><!--this button should remove from the list-->
+          <div><button data-bind="text: title"></button><button>X</button></div><!--this button should remove from the list-->
           <br>
         </div>
         
@@ -28,7 +28,7 @@
     </div>
     
     <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyACeu3Nlk0hCOlOHFX0bKVc5m2gFrcNTiQ&libraries=places&callback=mapView.init"></script>
-    <script as?I Vync src="JS/Project5.js"></script>
+    <script async src="JS/Project5.js"></script>
     <script src="JS/knockout.js"></script>
     <script src="JS/jquery-1.11.3.min.js"></script>
   </body>
