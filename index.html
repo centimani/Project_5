@@ -6,24 +6,11 @@
     <link href="CSS/Project5.css" rel="stylesheet">
     <title>Neighborhood Project</title>
   </head>
-<<<<<<< HEAD
-  <body onload=ViewModel.initBuildMarkers()>
-    
-    <div class="container">
-      <div class="row">
-        <div id="searchDiv" class="col-md-4">
-        <form>
-          <input id="pac-input" class="controls" type="text" placeholder="Search Box">
-        </form>
-        <div id="List" data-bind="foreach: MapMarkerArray">
-          <div><button data-bind="text: title"></button><button>X</button></div><!--this button should remove from the list-->
-=======
   <body onload=mapView.sort()>
     
     <div id="window">
       <div id="hoverBox">
         <div id="searchDiv">
->>>>>>> origin/master
           <br>
             <form action="#">
               <input id="filter" type="search" placeholder="Search Location List" name="q" data-bind="value: query, valueUpdate: 'keyup'," autocomplete="off">
@@ -44,11 +31,6 @@
         </div>
       </div>
     </div>
-<<<<<<< HEAD
-    
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyACeu3Nlk0hCOlOHFX0bKVc5m2gFrcNTiQ&libraries=places&callback=mapView.init"></script>
-    <script async src="JS/Project5.js"></script>
-=======
   <div id="domMap"></div>
   
   <script data-proofer-ignore type="text/html" id="marker">
@@ -59,7 +41,6 @@
   </script>
 
     <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyACeu3Nlk0hCOlOHFX0bKVc5m2gFrcNTiQ&libraries=places&callback=mapView.init" onerror="googleMapsAPIError()"></script>
->>>>>>> origin/master
     <script src="JS/knockout.js"></script>
     <script async src="JS/Project5.js"></script>
     <script src="JS/jquery-1.11.3.min.js"></script>
