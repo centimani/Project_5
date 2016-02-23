@@ -31,11 +31,14 @@ locationView = {
 
 	search: function(value) {
 		locationView.fakeMapMarkerArray.removeAll(); //empties and returns as an array
-
+    mapView.hideAllMarkers();
+    
 		for(var i in MapMarkerArray()) {
 			if(MapMarkerArray()[i].title.toLowerCase().indexOf(value.toLowerCase()) >= 0) { //comparing the mapmarker array and the query value
 				var addMarker= MapMarkerArray()[i]; //retrieve the marker data from our data driven array to place into our Visual array
 				locationView.fakeMapMarkerArray.push(addMarker); //adds the marker and all of his data from the data array to the visual array
+				mapView.showMarker(addMarker);
+				mapView.resizeMap();
 			}
 			else{
 			//console.log("fail");
@@ -236,6 +239,17 @@ mapView = {
 	googleMapsAPIError: function(){ //error message
 	alert("Google Maps could not be loaded");
 	},
+	
+	hideAllMarkers: function(){
+	  for (var i=0; i <MapMarkerArray().length; i++){
+	    MapMarkerArray()[i].setVisible(false);
+	  }
+	},
+	
+	showMarker: function(markerToShow){
+	  markerToShow.setVisible(true);
+	}
+	
 };
 
  ViewModel= {
