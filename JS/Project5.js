@@ -1,4 +1,4 @@
-
+use strict;
 var Bigmap= undefined; 
 var startLat = 38.883881; 
 var startLng = -94.667829; 
@@ -22,7 +22,7 @@ var Model = {
 locationView = {
 
 	query: ko.observable(''), 
-	
+	//brackets are not required here, somtimes attributes do not become observable, just the object
 	fakeMapMarkerArray : ko.observableArray([]), 
 /*This runs through the fakeMapMarkerArray to attempt to match the title of the marker to the qurey value.*/
 	search: function(value) {
