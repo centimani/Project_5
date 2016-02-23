@@ -73,7 +73,7 @@ mapView = {
 		var selectedLat =(places[0].geometry.location.lat()); 
 		var selectedLng = (places[0].geometry.location.lng()); 
 		var selectedName = (places[0].name); 
-		mapView.placeMapMarkers(selectedLat,selectedLng,selectedName);/
+		mapView.placeMapMarkers(selectedLat,selectedLng,selectedName);
 		mapView.resizeMap();
 		var NewFocus=MapMarkerArray().length - 1; 
 		var newMarker=MapMarkerArray()[NewFocus];
@@ -223,7 +223,7 @@ mapView = {
 		Bigmap.fitBounds(bounds);
 	},
 	
-	googleMapsAPIError: function(){ /
+	googleMapsAPIError: function(){ 
 		alert("Google Maps could not be loaded");
 	},
 	
